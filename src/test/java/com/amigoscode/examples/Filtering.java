@@ -1,22 +1,42 @@
 package com.amigoscode.examples;
 
-import com.amigoscode.beans.Car;
-import com.amigoscode.beans.Person;
-import com.amigoscode.mockdata.MockData;
-import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
 import java.util.List;
-import java.util.OptionalInt;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import javax.sound.sampled.SourceDataLine;
+
+import org.junit.jupiter.api.Test;
+
+import com.amigoscode.beans.Car;
+import com.amigoscode.mockdata.MockData;
+import com.google.common.base.Predicate;
 
 public class Filtering {
 
     @Test
     public void filter() throws Exception {
         List<Car> cars = MockData.getCars();
+        List<Car> cheapCars = cars.stream()
+            .filter(c -> c.getPrice() < 20_000.00)
+            .collect(Collectors.toList());
+        cheapCars.forEach(System.out::println);
+    }
+
+    @Test
+    public void multiFilter() throws Exception {
+        // multiple filters example:
+        List<Car> cars = MockData.getCars();
+        // you can also save predicates used for filters to a variable
+        Predicate<Car> pricePredicate = c -> c.getPrice() < 20_000.00;
+        Predicate<Car> yellowColorPredicate = c -> c.getColor().equals("Yellow");
+        List<Car> cheapYellowCars = cars.stream()
+            // .filter(c -> c.getPrice() < 20_000.00)
+            .filter(pricePredicate)
+            // .filter(c -> c.getColor().equals("Yellow"))
+            .filter(yellowColorPredicate)
+            .collect(Collectors.toList());
+        cheapYellowCars.forEach(System.out::println);
     }
 
     @Test
